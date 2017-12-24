@@ -41,26 +41,24 @@ public class OBJLoader {
                 float secondNumber = 0;
                 float thirdNumber = 0;
 
-                if (isVerticeLine) {
+                if (isVerticeLine || isNormalLine) {
                     firstNumber = Float.parseFloat(currentLine[1]);
                     secondNumber = Float.parseFloat(currentLine[2]);
                     thirdNumber = Float.parseFloat(currentLine[3]);
 
-                    Vector3f lineContent = new Vector3f(firstNumber, secondNumber, thirdNumber);
-                    vertices.add(lineContent);
+                    if(isVerticeLine) {
+                        Vector3f lineContent = new Vector3f(firstNumber, secondNumber, thirdNumber);
+                        vertices.add(lineContent);
+                    } else {
+                        Vector3f lineContent = new Vector3f(firstNumber, secondNumber, thirdNumber);
+                        normals.add(lineContent);
+                    }
                 } else if (isTextureLine) {
                     firstNumber = Float.parseFloat(currentLine[1]);
                     secondNumber = Float.parseFloat(currentLine[2]);
 
                     Vector2f lineContent = new Vector2f(firstNumber, secondNumber);
                     textures.add(lineContent);
-                } else if (isNormalLine) {
-                    firstNumber = Float.parseFloat(currentLine[1]);
-                    secondNumber = Float.parseFloat(currentLine[2]);
-                    thirdNumber = Float.parseFloat(currentLine[3]);
-
-                    Vector3f lineContent = new Vector3f(firstNumber, secondNumber, thirdNumber);
-                    normals.add(lineContent);
                 } else if (isIndiceLine) {
                     textureArray = new float[vertices.size() * 2];
                     normalsArray = new float[vertices.size() * 3];
@@ -104,7 +102,7 @@ public class OBJLoader {
             indicesArray[i] = indices.get(i);
         }
 
-        return loader.loadToVAO(verticesArray, textureArray, indicesArray);
+        return loader.loadToVAO(verticesArray, textureArray, normalsArray, indicesArray);
     }
 
     private static void processVertex(String[] vertexData, List<Integer> indices,
