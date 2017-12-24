@@ -9,6 +9,7 @@ import org.lwjgl.util.vector.Vector3f;
 import renderEngine.*;
 import models.RawModel;
 import shaders.StaticShader;
+import terrains.Terrain;
 import textures.ModelTexture;
 
 import static renderEngine.OBJLoader.loadOBJModel;
@@ -17,9 +18,10 @@ public class MainGame {
 
     private static Loader loader;
     private static Entity entity;
+    private static Terrain terrain;
+    private static Terrain terrain2;
     private static Camera camera;
     private static MasterRenderer renderer;
-    private static StaticShader shader;
     private static Light light;
 
     public static void main(String[] args) {
@@ -44,6 +46,8 @@ public class MainGame {
             camera.move();
 
             renderer.processEntity(entity);
+            renderer.processTerrain(terrain);
+            renderer.processTerrain(terrain2);
 
             renderer.render(light, camera);
             entity.addRotation(new Vector3f(0,0.2f,0));
@@ -66,6 +70,8 @@ public class MainGame {
         TexturedModel model = new TexturedModel(rawModel, texture);
         entity = new Entity(model, new Vector3f(-0, 0, -25), new Vector3f(0, 0, 0), 1);
         light = new Light(new Vector3f(0,0,25), new Vector3f(1, 1, 1));
+        terrain = new Terrain(-1,-1, loader, new ModelTexture(loader.loadTexture("purple")));
+        terrain2 = new Terrain(0,-1, loader, new ModelTexture(loader.loadTexture("purple")));
         camera = new Camera();
     }
 }

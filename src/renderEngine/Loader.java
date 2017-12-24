@@ -35,11 +35,12 @@ public class Loader {
     public int loadTexture(String fileName) {
         Texture texture;
         try {
-            texture = TextureLoader.getTexture("PNG", new FileInputStream("res/" + fileName + ".png"));
+            texture = TextureLoader.getTexture("PNG", new FileInputStream("./data/res/" + fileName + ".png"));
             int textureID = texture.getTextureID();
             textures.add(textureID);
             return textureID;
         } catch (IOException e) {
+            System.err.println("Couldn't load file!");
             e.printStackTrace();
         }
         return 0;

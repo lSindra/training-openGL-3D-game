@@ -124,7 +124,7 @@ public class OBJLoader {
 
     private static FileReader getFileReader(String filename) {
         FileReader fileReader = null;
-        File file = new File("res/" + filename + ".obj");
+        File file = new File("./data/res/" + filename + ".obj");
         try {
             fileReader = new FileReader(file);
         } catch (FileNotFoundException e) {
