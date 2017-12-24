@@ -6,11 +6,8 @@ import entities.Light;
 import models.TexturedModel;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
-import renderEngine.DisplayManager;
-import renderEngine.Loader;
+import renderEngine.*;
 import models.RawModel;
-import renderEngine.OBJLoader;
-import renderEngine.Renderer;
 import shaders.StaticShader;
 import textures.ModelTexture;
 
@@ -21,7 +18,7 @@ public class MainGame {
     private static Loader loader;
     private static Entity entity;
     private static Camera camera;
-    private static Renderer renderer;
+    private static MasterRenderer renderer;
     private static StaticShader shader;
     private static Light light;
 
@@ -36,9 +33,8 @@ public class MainGame {
 
     private static void initGame() {
         DisplayManager.createDisplay();
+        renderer = new MasterRenderer();
         loader = new Loader();
-        shader = new StaticShader();
-        renderer = new Renderer(shader);
 
         initGameEntities();
     }
@@ -47,20 +43,17 @@ public class MainGame {
         while (!Display.isCloseRequested()) {
             camera.move();
 
-            entity.addRotation(new Vector3f(0,0.2f,0));
+            renderer.processEntity(entity);
 
-            renderer.prepare();
-            shader.start();
-            shader.loadLight(light);
-            shader.loadViewMatrix(camera);
-            renderer.render(entity, shader);
-            shader.stop();
+            renderer.render(light, camera);
+            entity.addRotation(new Vector3f(0,0.2f,0));
 
             DisplayManager.updateDisplay();
         }
     }
 
     private static void close() {
+        renderer.cleanUp();
         loader.cleanUp();
         DisplayManager.closeDisplay();
     }
@@ -69,7 +62,7 @@ public class MainGame {
         RawModel rawModel = loadOBJModel("dragon", loader);
         ModelTexture texture = new ModelTexture(loader.loadTexture("purple"));
         texture.setShineDamper(10);
-        texture.setReflectivity(1);
+        texture.setReflectivity(0.5f);
         TexturedModel model = new TexturedModel(rawModel, texture);
         entity = new Entity(model, new Vector3f(-0, 0, -25), new Vector3f(0, 0, 0), 1);
         light = new Light(new Vector3f(0,0,25), new Vector3f(1, 1, 1));
