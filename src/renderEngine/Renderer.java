@@ -7,6 +7,7 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import shaders.StaticShader;
+import textures.ModelTexture;
 import toolBox.Maths;
 
 public class Renderer {
@@ -31,21 +32,33 @@ public class Renderer {
     }
 
     public void render(Entity entity, StaticShader shader) {
-        TexturedModel texturedModel = entity.getModel();
-        RawModel model = texturedModel.getRawModel();
+        TexturedModel model = entity.getModel();
+        RawModel rawModel = model.getRawModel();
         Matrix4f transformationMatrix;
 
-        GL30.glBindVertexArray(model.getVaoID());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
+        enableRenderingAttributes(rawModel);
+
         transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(),
                 entity.getRotation(),
                 entity.getScale());
         shader.loadTransformationMatrix(transformationMatrix);
+        ModelTexture texture = model.getTexture();
+        shader.loadShineVariables(texture.getShineDamper(), texture.getReflectivity());
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.getTexture().getID());
-        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
+        GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+
+        disableRenderingAttributes();
+    }
+
+    private void enableRenderingAttributes(RawModel rawModel) {
+        GL30.glBindVertexArray(rawModel.getVaoID());
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL20.glEnableVertexAttribArray(2);
+    }
+
+    private void disableRenderingAttributes() {
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL20.glDisableVertexAttribArray(2);

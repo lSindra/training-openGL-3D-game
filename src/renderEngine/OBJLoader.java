@@ -118,8 +118,8 @@ public class OBJLoader {
 
         Vector3f currentNorm = normals.get(Integer.parseInt(vertexData[2]) - 1);
         normalsArray[currentVertexPointer * 3] = currentNorm.x;
-        normalsArray[currentVertexPointer * 3] = currentNorm.y;
-        normalsArray[currentVertexPointer * 3] = currentNorm.z;
+        normalsArray[currentVertexPointer * 3 + 1] = currentNorm.y;
+        normalsArray[currentVertexPointer * 3 + 2] = currentNorm.z;
     }
 
     private static FileReader getFileReader(String filename) {

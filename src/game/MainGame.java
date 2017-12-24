@@ -68,9 +68,11 @@ public class MainGame {
     private static void initGameEntities() {
         RawModel rawModel = loadOBJModel("dragon", loader);
         ModelTexture texture = new ModelTexture(loader.loadTexture("purple"));
+        texture.setShineDamper(10);
+        texture.setReflectivity(1);
         TexturedModel model = new TexturedModel(rawModel, texture);
-        entity = new Entity(model, new Vector3f(-0, 0, -30), new Vector3f(0, 0, 0), 1);
+        entity = new Entity(model, new Vector3f(-0, 0, -25), new Vector3f(0, 0, 0), 1);
+        light = new Light(new Vector3f(0,0,25), new Vector3f(1, 1, 1));
         camera = new Camera();
-        light = new Light(new Vector3f(0,0,-20), new Vector3f(1, 1, 1));
     }
 }
