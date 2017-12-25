@@ -5,7 +5,6 @@ import models.RawModel;
 import models.TexturedModel;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 import shaders.StaticShader;
 import textures.ModelTexture;
 import toolBox.Maths;
@@ -42,12 +41,17 @@ public class EntityRenderer {
         enableRenderingAttributes(rawModel);
 
         ModelTexture texture = model.getTexture();
+        if (texture.isHasTransparency()) {
+            MasterRenderer.disableCulling();
+        }
+        shader.loadFakeLightningVariable(texture.isUseFakeLightning());
         shader.loadShineVariables(texture.getShineDamper(), texture.getReflectivity());
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
     }
 
     private void unbindTexturedModel() {
+        MasterRenderer.enableCulling();
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
         GL20.glDisableVertexAttribArray(2);
