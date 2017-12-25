@@ -31,7 +31,7 @@ public class MasterRenderer {
     private TerrainShader terrainShader = new TerrainShader();
 
     private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
-    private List<Terrain> terrains = new ArrayList<Terrain>();
+    private List<Terrain> terrains = new ArrayList<>();
 
     public MasterRenderer() {
         GL11.glEnable(GL11.GL_CULL_FACE);
@@ -68,7 +68,7 @@ public class MasterRenderer {
         if (batch != null) {
             batch.add(entity);
         } else {
-            List<Entity> newBatch = new ArrayList<Entity>();
+            List<Entity> newBatch = new ArrayList<>();
             newBatch.add(entity);
             entities.put(entityModel, newBatch);
         }
@@ -77,7 +77,7 @@ public class MasterRenderer {
     private void prepare() {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(0, 0, 0, 1);
+        GL11.glClearColor(0.3f, 0.6f, 0.9f, 1);
     }
 
     private void createProjectionMatrix() {
