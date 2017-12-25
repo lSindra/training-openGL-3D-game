@@ -7,6 +7,7 @@ import models.TexturedModel;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 import shaders.StaticShader;
 import shaders.TerrainShader;
 import terrains.Terrain;
@@ -21,6 +22,8 @@ public class MasterRenderer {
     private static final float FOV = 70;
     private static final float NEAR_PLANE = 0.1f;
     private static final float FAR_PLANE = 1000;
+    private static final Vector3f SKY_COLOR = new Vector3f(0.3f, 0.6f, 0.9f);
+    private static final Vector3f FOG_COLOR = new Vector3f(0.3f, 0.6f, 0.9f);
 
     private Matrix4f projectionMatrix;
 
@@ -52,11 +55,15 @@ public class MasterRenderer {
     public void render(Light sun, Camera camera) {
         prepare();
         shader.start();
+        shader.loadFogColor(FOG_COLOR.x, FOG_COLOR.y, FOG_COLOR.z);
+        shader.loadSkyColor(SKY_COLOR.x, SKY_COLOR.y, SKY_COLOR.z);
         shader.loadLight(sun);
         shader.loadViewMatrix(camera);
         entityRenderer.render(entities);
         shader.stop();
         terrainShader.start();
+        shader.loadFogColor(FOG_COLOR.x, FOG_COLOR.y, FOG_COLOR.z);
+        shader.loadSkyColor(SKY_COLOR.x, SKY_COLOR.y, SKY_COLOR.z);
         terrainShader.loadLight(sun);
         terrainShader.loadViewMatrix(camera);
         terrainRenderer.render(terrains);
@@ -85,7 +92,7 @@ public class MasterRenderer {
     private void prepare() {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(0.3f, 0.6f, 0.9f, 1);
+        GL11.glClearColor(SKY_COLOR.x, SKY_COLOR.y, SKY_COLOR.z, 1);
     }
 
     private void createProjectionMatrix() {
